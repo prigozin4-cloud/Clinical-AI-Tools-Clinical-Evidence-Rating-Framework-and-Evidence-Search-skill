@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence-Search Skill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-200: #5DCAA5;
+    --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-800: #085041; --teal-900: #04342C;
+    --amber-50: #FAEEDA; --amber-100: #FAC775; --amber-600: #854F0B; --amber-800: #633806;
+    --green-50: #EAF3DE; --green-100: #C0DD97; --green-600: #3B6D11; --green-800: #27500A;
+    --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-600: #185FA5;
+    --red-50: #FCEBEB; --red-400: #E24B4A;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-200: #B4B2A9;
+    --gray-400: #888780; --gray-600: #5F5E5A; --gray-800: #444441; --gray-900: #2C2C2A;
+    --purple-400: #7F77DD;
+
+    --bg: #ffffff; --bg-secondary: #F8F7F4; --bg-tertiary: #F1EFE8;
+    --text: #1a1a18; --text-secondary: #5F5E5A; --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #18181a; --bg-secondary: #222224; --bg-tertiary: #2a2a2c;
+      --text: #f0efe8; --text-secondary: #a8a7a0; --text-tertiary: #6e6e6a;
+      --border: rgba(255,255,255,0.09); --border-strong: rgba(255,255,255,0.16);
+      --teal-50: #04342C; --teal-100: #085041; --teal-400: #1D9E75;
+      --teal-600: #5DCAA5; --teal-800: #9FE1CB;
+      --green-50: #173404; --green-100: #27500A; --green-600: #97C459; --green-800: #C0DD97;
+      --amber-50: #412402; --amber-100: #633806; --amber-600: #EF9F27; --amber-800: #FAC775;
+      --blue-50: #042C53; --blue-100: #0C447C; --blue-600: #85B7EB;
+      --red-50: #501313; --red-400: #F09595;
+      --purple-400: #AFA9EC;
+    }
+  }
+
+  html { font-size: 16px; }
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border-strong);
+    padding: 0 2rem;
+    display: flex; align-items: center; height: 52px;
+  }
+  .nav-brand {
+    font-size: 12px; font-weight: 500; color: var(--text-tertiary);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-right: 2rem; white-space: nowrap; text-decoration: none;
+  }
+  .nav-links { display: flex; align-items: stretch; height: 100%; }
+  .nav-link {
+    display: flex; align-items: center; gap: 7px;
+    padding: 0 16px; font-size: 13px; font-weight: 400;
+    color: var(--text-secondary); text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s; white-space: nowrap;
+  }
+  .nav-link i { font-size: 15px; }
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active-cerf  { color: var(--purple-400); border-bottom-color: var(--purple-400); font-weight: 500; }
+  .nav-link.active-search { color: var(--teal-400); border-bottom-color: var(--teal-400); font-weight: 500; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 760px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+  /* ── HERO ── */
+  .hero { margin-bottom: 3rem; }
+  .eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 38px; font-weight: 400; line-height: 1.12;
+    color: var(--text); margin-bottom: 14px;
+  }
+  h1 em { font-style: italic; color: var(--teal-400); }
+  .hero-sub {
+    font-size: 15px; color: var(--text-secondary);
+    line-height: 1.65; max-width: 540px;
+  }
+
+  /* ── SOURCES ── */
+  .sources { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 3rem; }
+  .source-pill {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 500; padding: 5px 13px;
+    border-radius: 999px; border: 0.5px solid var(--border-strong);
+    background: var(--bg); color: var(--text-secondary);
+  }
+  .source-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.11em;
+    text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 14px;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 3rem;
+  }
+  .stage {
+    display: grid; grid-template-columns: 54px 1fr;
+    align-items: stretch; border-bottom: 0.5px solid var(--border);
+    background: var(--bg);
+  }
+  .stage:last-child { border-bottom: none; }
+  .stage-num {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: var(--text-tertiary);
+    background: var(--bg-secondary); border-right: 0.5px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+  .stage-body { padding: 15px 18px; }
+  .stage-name {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    margin-bottom: 4px; display: flex; align-items: center;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .stage-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 999px; }
+  .badge-wait  { background: var(--amber-50); color: var(--amber-600); }
+  .badge-auto  { background: var(--green-50);  color: var(--green-600); }
+  .badge-optional { background: var(--blue-50); color: var(--blue-600); }
+
+  /* ── SPOTLIGHT ── */
+  .spotlight {
+    background: var(--bg); border: 2px solid var(--teal-100);
+    border-radius: var(--radius-lg); padding: 20px 22px; margin-bottom: 3rem;
+  }
+  .spotlight-tag {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 3px 10px; border-radius: 999px;
+    background: var(--teal-50); color: var(--teal-600);
+    margin-bottom: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .spotlight-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .spotlight-body { font-size: 13px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .compare-col { border-radius: var(--radius-md); padding: 14px 16px; }
+  .compare-col.suf { background: var(--green-50); border: 0.5px solid var(--green-100); }
+  .compare-col.ins { background: var(--amber-50); border: 0.5px solid var(--amber-100); }
+  .compare-col-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.09em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .suf .compare-col-label { color: var(--green-600); }
+  .ins .compare-col-label { color: var(--amber-600); }
+  .compare-col-text { font-size: 12px; line-height: 1.55; }
+  .suf .compare-col-text { color: var(--green-800); }
+  .ins .compare-col-text { color: var(--amber-800); }
+
+  /* ── FEATURES GRID ── */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 3rem; }
+  .feature-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 18px;
+  }
+  .feature-icon { font-size: 20px; color: var(--teal-400); display: block; margin-bottom: 10px; }
+  .feature-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+  .feature-text { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── TRIGGERS ── */
+  .triggers {
+    background: var(--bg-secondary); border-radius: var(--radius-lg);
+    padding: 18px 20px; margin-bottom: 3rem; border: 0.5px solid var(--border);
+  }
+  .triggers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; margin-top: 14px; }
+  .trigger-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .trigger-row i { color: var(--teal-400); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── LIMITS ── */
+  .limits {
+    border: 0.5px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 3rem;
+  }
+  .limits-header {
+    display: flex; align-items: center; gap: 8px; padding: 12px 18px;
+    background: var(--bg-secondary); border-bottom: 0.5px solid var(--border);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  }
+  .limits-header i { color: var(--red-400); font-size: 15px; }
+  .limit-row {
+    display: flex; align-items: flex-start; gap: 10px; padding: 11px 18px;
+    font-size: 12px; color: var(--text-secondary);
+    border-bottom: 0.5px solid var(--border); line-height: 1.5;
+    background: var(--bg);
+  }
+  .limit-row:last-child { border-bottom: none; }
+  .limit-row i { color: var(--red-400); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── HANDOFF ── */
+  .handoff {
+    display: flex; align-items: flex-start; gap: 13px;
+    background: var(--teal-50); border-radius: var(--radius-lg);
+    padding: 16px 18px; border: 0.5px solid var(--teal-100);
+  }
+  .handoff i { color: var(--teal-600); font-size: 20px; margin-top: 1px; flex-shrink: 0; }
+  .handoff-text { font-size: 13px; color: var(--teal-800); line-height: 1.6; }
+  .handoff-text strong { font-weight: 500; }
+
+  @media (max-width: 560px) {
+    nav { padding: 0 1rem; }
+    .nav-brand { display: none; }
+    .page { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 28px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .triggers-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Clinical AI Skills</span>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active-cerf" style="color:var(--purple-400);border-bottom-color:var(--purple-400)">
+      <i class="ti ti-layout-list" aria-hidden="true"></i>Evidence Rating Framework
+    </a>
+    <a href="evidence-search.html" class="nav-link active-search">
+      <i class="ti ti-search" aria-hidden="true"></i>Evidence-Search
+    </a>
+  </div>
+</nav>
+
+<!-- override: on this page Evidence-Search is active, CERF is not -->
+<script>
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.href.includes('index')) { l.classList.remove('active-cerf'); l.style.cssText = ''; }
+  });
+</script>
+
+<main class="page">
+
+  <div class="hero">
+    <div class="eyebrow">Claude Skill · Clinical informatics</div>
+    <h1>Evidence<em>-Search</em></h1>
+    <p class="hero-sub">Evidence-based clinical Q&amp;A for medical staff. Retrieves verified literature across five databases, surfaces evidence quality, and returns citable answers — not prior knowledge.</p>
+  </div>
+
+  <div class="sources">
+    <div class="source-pill"><span class="source-dot" style="background:#E24B4A"></span>PubMed</div>
+    <div class="source-pill"><span class="source-dot" style="background:#378ADD"></span>Europe PMC</div>
+    <div class="source-pill"><span class="source-dot" style="background:#639922"></span>Consensus</div>
+    <div class="source-pill"><span class="source-dot" style="background:#EF9F27"></span>ClinicalTrials.gov</div>
+    <div class="source-pill"><span class="source-dot" style="background:#7F77DD"></span>OpenAlex</div>
+  </div>
+
+  <div class="section-label">Retrieval pipeline</div>
+  <div class="pipeline">
+    <div class="stage">
+      <div class="stage-num">S0</div>
+      <div class="stage-body">
+        <div class="stage-name">Question breakdown <span class="badge badge-wait">waits for confirmation</span></div>
+        <div class="stage-desc">Normalizes drugs &amp; lab values, parses PICO, decomposes into prioritized sub-questions, surfaces clinical signals and ambiguities with severity tags.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">S1</div>
+      <div class="stage-body">
+        <div class="stage-name">PubMed MCP search <span class="badge badge-auto">automatic</span></div>
+        <div class="stage-desc">Builds Boolean MeSH queries per sub-question. Retrieves PMIDs + abstracts. Assigns unique ref_ids — the only identifiers permitted in citations.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">S2</div>
+      <div class="stage-body">
+        <div class="stage-name">Coverage assessment <span class="badge badge-wait">user decides</span></div>
+        <div class="stage-desc">Prints per-sub-question coverage (Sufficient / Partial / Insufficient). Offers source expansion, or auto-proceeds if a bypass mode is set.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">S3</div>
+      <div class="stage-body">
+        <div class="stage-name">Secondary retrieval <span class="badge badge-optional">optional</span></div>
+        <div class="stage-desc">Europe PMC full-text, Consensus semantic search, ClinicalTrials active trials, OpenAlex citation graph. Deduplication by PMID &gt; DOI &gt; NCT &gt; title.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-num">∑</div>
+      <div class="stage-body">
+        <div class="stage-name">Synthesis</div>
+        <div class="stage-desc">Citation-enforced answer in two layers: bottom-line + evidence grade (Layer 1), then full per-sub-question breakdown on request (Layer 2). Second-pass citation verification on all output.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Highlighted feature — inconclusive evidence handling</div>
+  <div class="spotlight">
+    <span class="spotlight-tag">Non-directive mode</span>
+    <div class="spotlight-title">When evidence is insufficient, the skill presents rather than concludes</div>
+    <div class="spotlight-body">
+      If the retrieved corpus yields Low or Very Low quality evidence — or if core sub-questions surface conflicting results — the skill does not issue a recommendation. Instead, it lays out the available evidence transparently so the clinician can make an informed judgment. Conflicts between studies are named explicitly ("S3 reports X; S7 reports Y") rather than resolved by the model.
+    </div>
+    <div class="compare-grid">
+      <div class="compare-col suf">
+        <div class="compare-col-label">Sufficient evidence</div>
+        <div class="compare-col-text">Confident bottom-line answer with overall evidence grade, followed by per-sub-question breakdown and reference list on request.</div>
+      </div>
+      <div class="compare-col ins">
+        <div class="compare-col-label">Weak or conflicting evidence</div>
+        <div class="compare-col-text">Evidence presented without a verdict. Studies surfaced with their findings, populations, and limitations. Clinician retains full decision authority.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Key capabilities</div>
+  <div class="features">
+    <div class="feature-card">
+      <i class="ti ti-shield-check feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Anti-hallucination by design</div>
+      <div class="feature-text">Only claims backed by corpus refs appear in the answer. No prior knowledge, no fabricated citations.</div>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-chart-bar feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Evidence quality rating</div>
+      <div class="feature-text">Every answer carries an overall evidence grade. Conflicts in corpus are surfaced explicitly, not silently resolved.</div>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-layers-subtract feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">PICO decomposition</div>
+      <div class="feature-text">Complex questions are split into prioritized sub-questions — Core, Supporting, Optional — so coverage is granular.</div>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-arrows-exchange feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Bypass modes</div>
+      <div class="feature-text">"urgent" skips expansion for speed. "deep" auto-enables all secondary sources. Both still print the coverage summary.</div>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-pill feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Drug &amp; lab normalization</div>
+      <div class="feature-text">Brand names mapped to generics. Lab values interpreted with standard ranges before queries are built.</div>
+    </div>
+    <div class="feature-card">
+      <i class="ti ti-external-link feature-icon" aria-hidden="true"></i>
+      <div class="feature-title">Verifiable citations</div>
+      <div class="feature-text">Every reference carries its PMID, DOI, or NCT ID. Links are real and traceable — not generated placeholders.</div>
+    </div>
+  </div>
+
+  <div class="section-label">When this skill fires</div>
+  <div class="triggers">
+    <div class="triggers-grid">
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"What's the evidence for…"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"Current guidelines on…"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"Is X effective for Y?"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"RCTs comparing…"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"Treatment options for…"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>Any patient case + management ask</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>"Find evidence / search for studies"</div>
+      <div class="trigger-row"><i class="ti ti-check" aria-hidden="true"></i>Clinical questions needing citations</div>
+    </div>
+  </div>
+
+  <div class="section-label">Out of scope</div>
+  <div class="limits">
+    <div class="limits-header"><i class="ti ti-alert-triangle" aria-hidden="true"></i>What this skill does not do</div>
+    <div class="limit-row"><i class="ti ti-x" aria-hidden="true"></i>Formal GRADE / RoB 2 / AMSTAR 2 appraisal — that is the GRADE Evidence Rater's job</div>
+    <div class="limit-row"><i class="ti ti-x" aria-hidden="true"></i>Non-clinical or administrative queries</div>
+    <div class="limit-row"><i class="ti ti-x" aria-hidden="true"></i>Opinion responses with no citation requirement</div>
+    <div class="limit-row"><i class="ti ti-x" aria-hidden="true"></i>Citing anything outside the retrieved corpus</div>
+  </div>
+
+  <div class="handoff">
+    <i class="ti ti-link" aria-hidden="true"></i>
+    <div class="handoff-text"><strong>Automatic handoff to GRADE Evidence Rater</strong> — triggered when bypass=deep is used, when the user requests formal appraisal, or when core sub-questions return Low or Very Low evidence quality.</div>
+  </div>
+
+</main>
+</body>
+</html>
