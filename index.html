@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Evidence Rating Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #F8F7F4;
+  --bg-tertiary: #F1EFE8;
+  --text: #1a1a18;
+  --text-secondary: #5F5E5A;
+  --text-tertiary: #888780;
+  --border: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.18);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --purple-50: #EEEDFE; --purple-100: #CECBF6; --purple-400: #7F77DD;
+  --purple-600: #534AB7; --purple-800: #3C3489; --purple-900: #26215C;
+  --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-400: #1D9E75;
+  --teal-600: #0F6E56; --teal-800: #085041;
+  --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-400: #D85A30;
+  --coral-600: #993C1D; --coral-800: #712B13;
+  --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-400: #378ADD;
+  --blue-600: #185FA5; --blue-800: #0C447C;
+  --amber-50: #FAEEDA; --amber-100: #FAC775; --amber-400: #BA7517;
+  --amber-600: #854F0B; --amber-800: #633806;
+  --green-50: #EAF3DE; --green-100: #C0DD97; --green-400: #639922;
+  --green-600: #3B6D11; --green-800: #27500A;
+  --pink-50: #FBEAF0; --pink-100: #F4C0D1; --pink-400: #D4537E;
+  --pink-600: #993556; --pink-800: #72243E;
+  --red-50: #FCEBEB; --red-400: #E24B4A;
+
+  --success-bg: #EAF3DE; --success-text: #27500A;
+  --info-bg: #E6F1FB;    --info-text: #0C447C;
+  --warn-bg: #FAEEDA;    --warn-text: #633806;
+  --danger-bg: #FCEBEB;  --danger-text: #A32D2D;
+
+  /* page accent */
+  --accent: var(--purple-400);
+  --accent-bg: var(--purple-50);
+  --accent-border: var(--purple-100);
+  --accent-text: var(--purple-800);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181a; --bg-secondary: #222224; --bg-tertiary: #2a2a2c;
+    --text: #f0efe8; --text-secondary: #a8a7a0; --text-tertiary: #6e6e6a;
+    --border: rgba(255,255,255,0.09); --border-strong: rgba(255,255,255,0.16);
+    --purple-50: #26215C; --purple-100: #3C3489; --purple-400: #AFA9EC;
+    --purple-600: #CECBF6; --purple-800: #EEEDFE;
+    --teal-50: #04342C; --teal-100: #085041; --teal-400: #1D9E75;
+    --coral-50: #4A1B0C; --coral-100: #712B13; --coral-400: #F0997B; --coral-800: #FAECE7;
+    --blue-50: #042C53; --blue-100: #0C447C; --blue-400: #85B7EB; --blue-800: #E6F1FB;
+    --amber-50: #412402; --amber-100: #633806; --amber-400: #EF9F27; --amber-800: #FAEEDA;
+    --green-50: #173404; --green-100: #27500A; --green-400: #97C459; --green-800: #EAF3DE;
+    --pink-50: #4B1528; --pink-100: #72243E; --pink-400: #ED93B1; --pink-800: #FBEAF0;
+    --red-50: #501313; --red-400: #F09595;
+    --success-bg: #173404; --success-text: #97C459;
+    --info-bg: #042C53;    --info-text: #85B7EB;
+    --warn-bg: #412402;    --warn-text: #EF9F27;
+    --danger-bg: #501313;  --danger-text: #F09595;
+    --accent-bg: var(--purple-50); --accent-border: var(--purple-100); --accent-text: var(--purple-400);
+  }
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg-tertiary);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border-strong);
+  padding: 0 2rem;
+  display: flex; align-items: center; height: 52px;
+}
+.nav-brand {
+  font-size: 12px; font-weight: 500; color: var(--text-tertiary);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-right: 2rem; white-space: nowrap; text-decoration: none;
+}
+.nav-links { display: flex; align-items: stretch; height: 100%; }
+.nav-link {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 16px; font-size: 13px; font-weight: 400;
+  color: var(--text-secondary); text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s; white-space: nowrap;
+}
+.nav-link i { font-size: 15px; }
+.nav-link:hover { color: var(--text); }
+.nav-link.active-cerf  { color: var(--purple-400); border-bottom-color: var(--purple-400); font-weight: 500; }
+.nav-link.active-search { color: var(--teal-400); border-bottom-color: var(--teal-400); font-weight: 500; }
+
+/* ── LAYOUT ── */
+.page { max-width: 760px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+/* ── HEADER ── */
+.header { margin-bottom: 2.5rem; border-bottom: 0.5px solid var(--border-strong); padding-bottom: 24px; }
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 10px;
+}
+.page-title {
+  font-size: clamp(22px, 4vw, 30px); font-weight: 300;
+  letter-spacing: -0.02em; color: var(--text); line-height: 1.2; margin-bottom: 10px;
+}
+.page-title strong { font-weight: 500; }
+.page-sub { font-size: 14px; color: var(--text-secondary); max-width: 540px; line-height: 1.65; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 12px;
+}
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 3rem; }
+.step {
+  display: flex; background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-lg); overflow: hidden;
+  transition: border-color 0.15s;
+}
+.step:hover { border-color: var(--border-strong); }
+.step-bar { width: 4px; flex-shrink: 0; }
+.step-body { flex: 1; padding: 14px 18px; }
+.step-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px; flex-wrap: wrap;
+}
+.step-index {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--text-tertiary); min-width: 18px;
+}
+.badge {
+  font-size: 11px; font-weight: 500; padding: 2px 10px;
+  border-radius: 99px;
+}
+.step-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.tool-ref {
+  margin-left: auto; font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--text-tertiary);
+}
+
+/* chips */
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.chip {
+  font-size: 11px; padding: 3px 9px; border-radius: 99px;
+  border: 0.5px solid var(--border-strong);
+  color: var(--text-secondary); background: var(--bg-tertiary);
+}
+.chip-up { background: var(--info-bg); color: var(--info-text); border-color: transparent; }
+
+/* split */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+@media (max-width: 520px) { .split { grid-template-columns: 1fr; } }
+.split-box {
+  padding: 10px 12px; border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-md); background: var(--bg-secondary);
+}
+.split-title {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); margin-bottom: 6px;
+}
+.split-item { font-size: 11px; color: var(--text-secondary); padding: 1.5px 0; }
+.split-item::before { content: '· '; color: var(--text-tertiary); }
+
+/* GRADE */
+.grade-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.grade-item { display: flex; flex-direction: column; gap: 3px; }
+.grade-chip { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 99px; }
+.grade-phrase { font-size: 10px; font-style: italic; color: var(--text-tertiary); max-width: 150px; padding-left: 2px; }
+
+/* connector */
+.connector {
+  text-align: left; padding-left: 20px; color: var(--border-strong);
+  font-size: 13px; line-height: 1; margin: 1px 0; user-select: none;
+}
+
+/* footer */
+.footer {
+  margin-top: 28px; padding-top: 18px;
+  border-top: 0.5px solid var(--border-strong);
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+}
+.footer-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-tertiary); margin-right: 4px;
+}
+.footer-chip {
+  font-size: 11px; padding: 3px 10px; border-radius: 99px;
+  border: 0.5px solid var(--border-strong);
+  color: var(--text-secondary); background: var(--bg);
+}
+.attribution { margin-top: 14px; font-size: 11px; color: var(--text-tertiary); }
+
+/* color accents */
+.bar-purple { background: var(--purple-800); }
+.bar-teal   { background: var(--teal-600); }
+.bar-coral  { background: var(--coral-600); }
+.bar-blue   { background: var(--blue-600); }
+.bar-amber  { background: var(--amber-600); }
+.bar-green  { background: var(--green-600); }
+.bar-pink   { background: var(--pink-600); }
+
+.lbl-purple { background: var(--purple-50); color: var(--purple-800); }
+.lbl-teal   { background: var(--teal-50);   color: var(--teal-800);   }
+.lbl-coral  { background: var(--coral-50);  color: var(--coral-800);  }
+.lbl-blue   { background: var(--blue-50);   color: var(--blue-800);   }
+.lbl-amber  { background: var(--amber-50);  color: var(--amber-800);  }
+.lbl-green  { background: var(--green-50);  color: var(--green-800);  }
+.lbl-pink   { background: var(--pink-50);   color: var(--pink-800);   }
+
+@media (max-width: 560px) {
+  nav { padding: 0 1rem; }
+  .nav-brand { display: none; }
+  .page { padding: 2rem 1rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Clinical AI Skills</span>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active-cerf">
+      <i class="ti ti-layout-list" aria-hidden="true"></i>Evidence Rating Framework
+    </a>
+    <a href="evidence-search.html" class="nav-link">
+      <i class="ti ti-search" aria-hidden="true"></i>Evidence-Search
+    </a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <header class="header">
+    <div class="eyebrow">Evidence appraisal · 7-domain framework</div>
+    <h1 class="page-title">Clinical Evidence <strong>Rating Framework</strong></h1>
+    <p class="page-sub">A structured model for evaluating clinical research quality — integrating study design, GRADE certainty, risk of bias, statistical validity, external validity, and reporting standards.</p>
+  </header>
+
+  <div class="section-label">Appraisal domains</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-bar bar-purple"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">01</span>
+          <span class="badge lbl-purple">Study design</span>
+          <span class="step-name">Research design &amp; evidence hierarchy</span>
+        </div>
+        <div class="chips">
+          <span class="chip">Systematic review / meta-analysis</span><span class="chip">RCT</span>
+          <span class="chip">Quasi-experimental</span><span class="chip">Cohort / case-control / cross-sectional</span>
+          <span class="chip">Case series / expert opinion</span><span class="chip">Allocation method</span>
+          <span class="chip">Pre-registration status</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-teal"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">02</span>
+          <span class="badge lbl-teal">PICO alignment</span>
+          <span class="step-name">Population, Intervention, Comparator &amp; Outcome</span>
+        </div>
+        <div class="chips">
+          <span class="chip">Population match to clinical question</span><span class="chip">Intervention fidelity</span>
+          <span class="chip">Comparator appropriateness (active vs. placebo)</span>
+          <span class="chip">Primary outcome clinical relevance</span>
+          <span class="chip">Surrogate vs. patient-important outcomes</span>
+          <span class="chip">Follow-up duration adequacy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-coral"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">03</span>
+          <span class="badge lbl-coral">GRADE certainty</span>
+          <span class="step-name">Evidence certainty rating with recommended language</span>
+          <span class="tool-ref">GRADE guidance 26</span>
+        </div>
+        <div class="grade-row">
+          <div class="grade-item">
+            <span class="grade-chip" style="background:var(--success-bg);color:var(--success-text)">⬛ High</span>
+            <span class="grade-phrase">"The evidence strongly supports…"</span>
+          </div>
+          <div class="grade-item">
+            <span class="grade-chip" style="background:var(--info-bg);color:var(--info-text)">▣ Moderate</span>
+            <span class="grade-phrase">"The evidence moderately supports…"</span>
+          </div>
+          <div class="grade-item">
+            <span class="grade-chip" style="background:var(--warn-bg);color:var(--warn-text)">◨ Low</span>
+            <span class="grade-phrase">"The evidence weakly supports…"</span>
+          </div>
+          <div class="grade-item">
+            <span class="grade-chip" style="background:var(--danger-bg);color:var(--danger-text)">□ Very low</span>
+            <span class="grade-phrase">"Evidence is insufficient to conclude…"</span>
+          </div>
+        </div>
+        <div class="chips" style="margin-top:10px">
+          <span class="chip">Downgrade: risk of bias</span><span class="chip">Downgrade: inconsistency</span>
+          <span class="chip">Downgrade: indirectness</span><span class="chip">Downgrade: imprecision</span>
+          <span class="chip">Downgrade: publication bias</span>
+          <span class="chip chip-up">Upgrade: large effect</span>
+          <span class="chip chip-up">Upgrade: dose-response</span>
+          <span class="chip chip-up">Upgrade: confounders</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-blue"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">04</span>
+          <span class="badge lbl-blue">Risk of bias</span>
+          <span class="step-name">Bias assessment by study design</span>
+        </div>
+        <div class="split">
+          <div class="split-box">
+            <div class="split-title">RoB 2 — Randomised trials</div>
+            <div class="split-item">Randomisation process</div>
+            <div class="split-item">Deviations from intervention</div>
+            <div class="split-item">Missing outcome data</div>
+            <div class="split-item">Outcome measurement</div>
+            <div class="split-item">Selection of reported results</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">ROBINS-I — Observational studies</div>
+            <div class="split-item">Confounding</div>
+            <div class="split-item">Selection of participants</div>
+            <div class="split-item">Classification of interventions</div>
+            <div class="split-item">Deviations from intervention</div>
+            <div class="split-item">Missing data</div>
+            <div class="split-item">Outcome measurement</div>
+            <div class="split-item">Selective reporting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-amber"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">05</span>
+          <span class="badge lbl-amber">Statistical quality</span>
+          <span class="step-name">Independent domain — complements GRADE imprecision</span>
+        </div>
+        <div class="chips">
+          <span class="chip">Statistical power &amp; sample size</span>
+          <span class="chip">Heterogeneity (I²)</span>
+          <span class="chip">MCID (minimal clinically important difference)</span>
+          <span class="chip">Subgroup analyses — pre-specified vs. post-hoc</span>
+          <span class="chip">Confidence interval width &amp; direction</span>
+          <span class="chip">Effect size magnitude (absolute vs. relative risk)</span>
+          <span class="chip">Multiplicity correction</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-green"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">06</span>
+          <span class="badge lbl-green">External validity</span>
+          <span class="step-name">Generalisability to your clinical context</span>
+        </div>
+        <div class="split">
+          <div class="split-box">
+            <div class="split-title">Population generalisability</div>
+            <div class="split-item">Age, sex, comorbidity match</div>
+            <div class="split-item">Ethnicity representation</div>
+            <div class="split-item">Inclusion / exclusion criteria fit</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">Setting generalisability</div>
+            <div class="split-item">Primary vs. tertiary care context</div>
+            <div class="split-item">Geographic / healthcare system fit</div>
+            <div class="split-item">Resource availability</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">Intervention generalisability</div>
+            <div class="split-item">Dose, route, duration match</div>
+            <div class="split-item">Concomitant treatments</div>
+            <div class="split-item">Protocol adherence feasibility</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">Outcome generalisability</div>
+            <div class="split-item">Outcome measure available locally</div>
+            <div class="split-item">Timeframe realistic in practice</div>
+            <div class="split-item">Patient-important vs. surrogate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector">↓</div>
+
+    <div class="step">
+      <div class="step-bar bar-pink"></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-index">07</span>
+          <span class="badge lbl-pink">Reporting quality</span>
+          <span class="step-name">Guideline-based transparency assessment</span>
+          <span class="tool-ref">EQUATOR reporting standards</span>
+        </div>
+        <div class="split">
+          <div class="split-box">
+            <div class="split-title">CONSORT — Randomised trials</div>
+            <div class="split-item">Allocation concealment described</div>
+            <div class="split-item">CONSORT flow diagram present</div>
+            <div class="split-item">ITT analysis reported</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">STROBE — Observational studies</div>
+            <div class="split-item">Participant selection transparent</div>
+            <div class="split-item">Confounders listed &amp; handled</div>
+            <div class="split-item">Loss to follow-up reported</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">PRISMA — Systematic reviews</div>
+            <div class="split-item">Search strategy reproducible</div>
+            <div class="split-item">PRISMA flow diagram present</div>
+            <div class="split-item">PROSPERO registration</div>
+          </div>
+          <div class="split-box">
+            <div class="split-title">SPIRIT — Clinical protocols</div>
+            <div class="split-item">Objectives &amp; estimands defined</div>
+            <div class="split-item">Eligibility criteria complete</div>
+            <div class="split-item">Sample size rationale provided</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer">
+      <span class="footer-label">Standards</span>
+      <span class="footer-chip">GRADE guidance 26</span>
+      <span class="footer-chip">RoB 2 (Cochrane)</span>
+      <span class="footer-chip">ROBINS-I</span>
+      <span class="footer-chip">CONSORT 2010</span>
+      <span class="footer-chip">STROBE</span>
+      <span class="footer-chip">PRISMA 2020</span>
+      <span class="footer-chip">SPIRIT 2013</span>
+    </div>
+    <p class="attribution">Developed by Ayelet Prigozin, PhD in Public Health · Meuhedet Health Services, Jerusalem District</p>
+  </footer>
+
+</main>
+</body>
+</html>
